@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+        <title>ASTROLOGY</title>
+    </head>
+    <body>
+        <nav>
+            <h1><a href="index.html">IGNACIO ALARCÓN</a></h1>
+            <select onchange="location = this.value;">
+                <option value="index.html">INDEX</option>
+                <option value="astrology.html" selected>ASTROLOGY</option>
+                <option value="astronomy.html">ASTRONOMY</option>
+                <option value="earthquakes.html">EARTHQUAKES</option>
+                <option value="weather.html">WEATHER</option>
+            </select>
+        </nav>
+        <header style="display: none;">
+            <div>Marque uno:</div>
+            <div><input type="radio" name="selecciona" value="todos" checked />Todos</div>
+            <div><input type="radio" name="selecciona" value="agua" />Agua</div>
+            <div><input type="radio" name="selecciona" value="aire" />Aire</div>
+            <div><input type="radio" name="selecciona" value="fuego" />Fuego</div>
+            <div><input type="radio" name="selecciona" value="tierra" />Tierra</div>
+        </header>
+        <aside></aside>
+        <main></main>
+        <script>
+            const alternativas = document.querySelector("header");
+            const detalles = document.querySelector("aside");
+            const respuesta = document.querySelector("main");
+            var datos;
+            async function estudiantes() {
+                const data = await fetch("https://raw.githubusercontent.com/profesorfaco/dno037-2023-2/main/clase-07/_curso.json");
+                datos = await data.json();
+                alternativas.removeAttribute("style");
+                datos.forEach((x) => {
+                    if(x.github !== ""){
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo
+                        }</p></div></article>`;
+                    }
+                });
+            }
+            estudiantes().catch((error) => console.error(error));
+
+            function compatibilidad(valor) {
+                respuesta.innerHTML = ``;
+                detalles.innerHTML = ``;
+
+                //Lo que sigue lo saqué de https://www.clara.es/
+
+                if (valor == "fuego") {
+                    about =
+                        "<em>Con signo de fuego (Aries, Leo y Sagitario)</em>: Como el fuego mismo, los signos de fuego tienden a ser apasionados, dinámicos y temperamentales. El fuego puede mantenerte caliente o puede causar una gran destrucción. Si bien el fuego se quema rápidamente sin combustible para seguir funcionando, también puede regenerar su poder de las cenizas. Una sola chispa puede provocar un incendio forestal. Como resultado, las señales de fuego deben cuidarse y manejarse con cuidado.";
+                } else if (valor == "agua") {
+                    about =
+                        "<em>Con signo de agua (Cáncer, Escorpio y Piscis)</em>: Intuitivos, emocionales y ultrasensibles, los signos de agua pueden ser tan misteriosos como el océano mismo. Como el agua, pueden ser refrescantes o pueden ahogarte en sus profundidades. Estos signos a menudo tienen sueños intensos e intuición psíquica límite. La seguridad es importante para ellos; después de todo, el agua necesita un recipiente o se seca y desaparece.";
+                } else if (valor == "aire") {
+                    about =
+                        "<em>Con signo de aire (Géminis, Libra y Acuario)</em>: Los signos de aire tienen que ver con la acción, las ideas y el movimiento; son los vientos de cambio. Cuando te golpea una fuerte ráfaga, no puedes evitar moverte. Mientras que algunos dentro de sus filas pueden ser cabezas huecas de la vida real, otros son tan poderosos como una fuerza G que desafía la gravedad. Las señales de aire brindan a todos un soplo de aire fresco cuando las cosas comienzan a ponerse rancias. Como la brisa, no puedes atraparlos y nunca sabes dónde te dejarán una vez que te levanten. Sin embargo, casi siempre será una aventura.";
+                } else if (valor == "tierra"){
+                    about =
+                        "<em>Con signo de tierra (Tauro, Virgo, Capricornio)</em>: Los signos de tierra lo mantienen real. Son las personas arraigadas en el planeta, las que nos traen a la tierra y nos recuerdan que debemos comenzar con una base sólida. Lentos y constantes, estos constructores son leales y estables, y se adhieren a su gente en tiempos difíciles. En los días buenos, son prácticos; en el peor de los casos, pueden ser materialistas o estar demasiado centrados en la superficie de las cosas para cavar en las profundidades.";
+                } else {
+                    about = "Diseño y nuevos medios."
+                }
+
+                detalles.innerHTML += `<div><p>${about}</p></div>`;
+
+                datos.forEach((x) => {
+                    if (valor == x.zodiaco.elemento) {
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo
+                        }</p></div></article>`;
+                    }
+                });
+            }
+
+            const seleccionado = document.querySelectorAll('input[name="selecciona"]');
+
+            seleccionado.forEach((i) => {
+                i.addEventListener("change", function () {
+                    var valor = this.value;
+                    if (valor !== "todos"){
+                        console.log(valor);
+                        compatibilidad(valor);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
